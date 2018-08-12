@@ -117,7 +117,7 @@ class KOCWindow:
         size = WIDTH//10
         offset = (WIDTH/2) - (size*(count/2))
         padding = size//6
-        for g in (False, True): #broke bc backwards rects
+        for g in (False, True):
             for i in range(count):
                 if not g:
                     p1 = Point(offset + i*size, dividing_line+padding)
@@ -144,7 +144,7 @@ class KOCWindow:
         offset = (WIDTH/2) - (wth*(count/2))
         padding = size + padding*2
         for i in range(count):
-            p1 = Point(offset + i*wth, dividing_line-hgt-padding)
+            p1 = Point(offset + i*wth + (3*i), dividing_line-hgt-padding)
             p2 = Point(offset+wth + (i*wth), dividing_line-padding)
 
             handCell = Clickable(
