@@ -4,7 +4,7 @@ import random
 
 ALL_CARDS = [
     Boi, DirectDamageSpell, Nuke,
-    Yeti
+    Yeti, Puff, Raptor
 ]
 
 def bois():
