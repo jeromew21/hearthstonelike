@@ -114,17 +114,19 @@ class KOCWindow:
         self.info_text.draw(self.win)
 
         count = 5
+        spacer = 3
         size = WIDTH//10
+        size_x = size + 2 * spacer
         offset = (WIDTH/2) - (size*(count/2))
         padding = size//6
         for g in (False, True):
             for i in range(count):
                 if not g:
-                    p1 = Point(offset + i*size, dividing_line+padding)
-                    p2 = Point(offset+size + (i*size), dividing_line+size+padding)
+                    p1 = Point(offset + i*size_x + spacer, dividing_line+padding)
+                    p2 = Point(offset+size_x + (i*size_x) - spacer, dividing_line+size+padding)
                 else:
-                    p1 = Point(offset + i*size, dividing_line-size-padding)
-                    p2 = Point(offset+size + (i*size), dividing_line-padding)
+                    p1 = Point(offset + i*size_x + spacer, dividing_line-size-padding)
+                    p2 = Point(offset+size_x + (i*size_x) - spacer, dividing_line-padding)
 
                 soldierCell = Clickable(
                     "",
@@ -139,13 +141,13 @@ class KOCWindow:
                     self.battlefield2.append(soldierCell)
 
         count = 7
-        wth = WIDTH//8
+        wth = WIDTH//8 + 2*spacer
         hgt = HEIGHT//4
         offset = (WIDTH/2) - (wth*(count/2))
         padding = size + padding*2
         for i in range(count):
-            p1 = Point(offset + i*wth + (3*i), dividing_line-hgt-padding)
-            p2 = Point(offset+wth + (i*wth), dividing_line-padding)
+            p1 = Point(offset + i*wth + spacer, dividing_line-hgt-padding)
+            p2 = Point(offset+wth + (i*wth) - spacer, dividing_line-padding)
 
             handCell = Clickable(
                 "",
@@ -328,7 +330,7 @@ class KOCWindow:
             else:
                 if self.game.player1.spell:
                     self.set_targets(self.game.player1.spell_targets)
-                self.update_all()
+                else: self.update_all()
         else:
             self._active_card_index = index
             self.unset_activeSI()
