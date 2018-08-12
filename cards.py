@@ -55,6 +55,17 @@ class Boi(Soldier):
     name = "Boi"
     info = "A little boi"
 
+class Archer(Soldier):
+    attack = 2
+    health = 1
+    cost = 2
+    name = "Archer"
+    info = "Deal 1 damage"
+    def battlecry(self, player, enemy):
+        spell = DirectDamageSpell()
+        spell.damage = 1
+        player.set_spell(spell, "any")
+
 class Raptor(Soldier):
     attack = 3
     health = 2
