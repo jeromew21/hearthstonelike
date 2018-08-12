@@ -34,7 +34,7 @@ class Player:
     @property
     def mana_str(self):
         return "{}/{}".format(*self._mana)
-    def take_damage(self, damage):
+    def take_damage(self, damager, damage):
         self.health -= damage
     def spend_mana(self, m):
         self._mana = (self._mana[0] - m, self._mana[1])

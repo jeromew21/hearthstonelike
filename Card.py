@@ -52,11 +52,14 @@ class Soldier(Card):
         self._can_attack = True
     def end_turn(self):
         self._can_attack = False
-    def take_damage(self, damage):
-        self.health -= damage
+    def take_damage(self, attacker, damage):
+        if hasattr(attacker, "poison"):
+            self.health = 0
+        else:
+            self.health -= damage
     def do_attack(self, target):
-        target.take_damage(self.attack)
-        self.take_damage(target.attack)
+        target.take_damage(self, self.attack)
+        self.take_damage(target, target.attack)
         self._can_attack = False
 
 class Spell(Card):

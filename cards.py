@@ -33,7 +33,7 @@ class DirectDamageSpell(TargetSpell):
     def info(self):
         return "Do {} damage".format(self.damage)
     def cast(self, target):
-        target.take_damage(self.damage)
+        target.take_damage(self, self.damage)
 
 class Mulligan(Spell):
     cost = 2
@@ -65,6 +65,14 @@ class Archer(Soldier):
         spell = DirectDamageSpell()
         spell.damage = 1
         player.set_spell(spell, "any")
+
+class Cobra(Soldier):
+    attack = 2
+    health = 4
+    cost = 3
+    name = "Cobra"
+    info = "Poisonous cobra"
+    poisonous = True
 
 class Raptor(Soldier):
     attack = 3
