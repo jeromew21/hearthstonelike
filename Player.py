@@ -6,6 +6,7 @@ class Player:
     def __init__(self, name, deck):
         self.name = name
         self.deck = deck
+        self.deck.shuffle()
         self.hand = Hand(self.deck)
         self.health = 30
         self.battlefield = Battlefield(self)
@@ -44,4 +45,27 @@ class Player:
             print("{} played {}".format(self.name, card))
             return True
         return False
+    def get_target(self):
+        print("Targets:")
+        targets = self.battlefield + self.enemy.battlefield + \
+            [self, self.enemy]
+        n = 0
+        for k in targets:
+            print(n, str(k))
+            n += 1
+        while True:
+            try:
+                i = int(input("Target:"))
+                if i < 0 or i >= len(targets):
+                    raise Exception("oops")
+            except:
+                print("Invalid input.")
+        return targets[i]
+
+class GUIPlayer(Player):
+    def _get_target(self):
+        while True:
+            break
+        return 0
+    
 

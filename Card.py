@@ -9,6 +9,8 @@ class Card:
     @property
     def subtext(self):
         return "card"
+    def __str__(self):
+        return self.name
 
 class Soldier(Card):
     health = 2
@@ -47,8 +49,6 @@ class Soldier(Card):
         target.take_damage(self.attack)
         self.take_damage(target.attack)
         self._can_attack = False
-    def __str__(self):
-        return self.name
 
 class Spell(Card):
     pass
