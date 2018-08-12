@@ -39,6 +39,11 @@ class Yeti(Soldier):
     display_name = "Abominable\nSnowman"
     info = "Who ya gonna call"
 
+class Puff(DirectDamageSpell):
+    damage = 5
+    cost = 4
+    name = "Puff"
+
 class Nuke(DirectDamageSpell):
     damage = 10
     cost = 10
