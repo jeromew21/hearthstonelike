@@ -16,7 +16,9 @@ class BuffSpell(TargetSpell):
     constraint = "soldiers"
     @property
     def subtext(self):
-        return "+{} {}".format(self.value, self.buff)
+        return "{}{} {}".format(
+            "+" if self.value >= 0 else "",
+            self.value, self.buff)
     def cast(self, target):
         setattr(target, self.buff, 
             getattr(target, self.buff) + self.value)
@@ -100,16 +102,39 @@ class Raptor(Soldier):
     attack = 3
     health = 2
     cost = 2
-    name = "Raptor"
-    info = "Kawhi Leonard"
+    name = "Kawhi Leonard"
+    info = "rawr"
+
+class Duo(Soldier):
+    attack = 2
+    health = 2
+    cost = 3
+    name = "Body Double"
+    info = "double the pride, twice the fall"
+    def battlecry(self, player, enemy):
+        player.battlefield.add_soldier(Duo())
 
 class Yeti(Soldier):
     attack = 4
     health = 5
     cost = 4
     name = "Abominable Snowman"
-    display_name = "Abominable\nSnowman"
     info = "Who ya gonna call"
+
+class GeneticFreak(Soldier):
+    attack = 7
+    health = 9
+    cost = 8
+    name = "LeBron James"
+    info = "Large man"
+
+class AssasinationPlot(TargetSpell):
+    constraint = "soldiers"
+    cost = 4
+    name = "Assassination Plot"
+    info = "Kill a soldier"
+    def cast(self, target):
+        target.health = 0
 
 class Firebreath(DirectDamageSpell):
     damage = 5
@@ -126,3 +151,17 @@ class Sharpsword(BuffSpell):
     value = 3
     cost = 2
     name = "Sharpsword"
+
+class PlotArmor(BuffSpell):
+    buff = "health"
+    value = 5
+    cost = 3
+    name = "Plot Armor"
+    info = "OP"
+
+class Shrink(BuffSpell):
+    buff = "attack"
+    value = -5
+    cost = 3
+    name = "Shrink"
+    info = "get a shrink"

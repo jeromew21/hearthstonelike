@@ -6,7 +6,8 @@ class Battlefield:
     def set_enemy(self, enemy):
         self.enemy = enemy
     def add_soldier(self, soldier):
-        self.soldiers.append(soldier)
+        if self.size < self.max_size:
+            self.soldiers.append(soldier)
     def start_turn(self):
         for s in self.soldiers: s.start_turn()
     def end_turn(self):

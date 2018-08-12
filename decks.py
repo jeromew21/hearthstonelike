@@ -3,10 +3,10 @@ from cards import *
 import random
 
 ALL_CARDS = [
-    Boi, Nuke,
-    Yeti, Firebreath, Raptor, Sharpsword,
+    Boi, Nuke, Yeti, Firebreath, Raptor, Sharpsword,
     Mulligan, Archer, Cobra, FastForward, 
-    ReachOut
+    ReachOut, AssasinationPlot, PlotArmor, Shrink,
+    Duo, GeneticFreak
 ]
 
 def bois():

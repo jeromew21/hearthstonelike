@@ -9,6 +9,8 @@ class Card:
         return self
     @property
     def display_name(self):
+        if len(self.name) > 11:
+            return self.name.replace(" ", "\n")
         return self.name
     @property
     def display_subtext(self):
