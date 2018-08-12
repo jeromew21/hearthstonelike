@@ -1,7 +1,7 @@
 from DeckHand import Deck, Hand
 from Battlefield import Battlefield
 
-from multiprocessing.pool import ThreadPool
+import random, time
 
 class Player:
     attack = 0
@@ -24,6 +24,8 @@ class Player:
         self._mana = (self._mana[1], self._mana[1])
         self.draw_card()
         self.battlefield.start_turn()
+        self.spell = None
+        self.spell_targets = None
     def end_turn(self):
         self.battlefield.end_turn()
     @property
@@ -39,6 +41,8 @@ class Player:
     def soldier_attack(self, index, enemy):
         if self.battlefield.can_attack(index, enemy):
             self.battlefield.soldiers[index].do_attack(enemy)
+            self.clean_up()
+            self.enemy.clean_up()
             return True
         return False
     def draw_card(self):
@@ -79,12 +83,14 @@ class Player:
             targets = []
         return targets
     def set_spell(self, spell, constraint="any"):
+        print("Waiting to cast {}".format(spell))
         self.spell = spell
         self.spell_targets = self.constrain_targets(constraint)
         if not self.spell_targets:
             self.spell = None
     def cast(self, target):
         if target in self.spell_targets:
+            print("Casting {} on {}".format(self.spell, target))
             self.spell.cast(target)
             self.spell = None
             self.spell_targets = None
@@ -107,6 +113,25 @@ class Player:
             except (ZeroDivisionError, ValueError):
                 print("Invalid input.")
         return targets[i]
-    
+    def random_turn(self):
+        li = list(range(self.hand.size))
+        random.shuffle(li)
+        for i in li:
+            if self.play_card(i):
+                time.sleep(random.random() * 2)
+            if self.spell:
+                if self.spell_targets:
+                    time.sleep(random.random() * 2)
+                    self.cast(random.choice(self.spell_targets))
+                else:
+                    break
+        sols = list(range(self.battlefield.size))
+        random.shuffle(sols)
+        for s in sols:
+            for e in [self.enemy] + self.enemy.battlefield.soldiers:
+                if self.soldier_attack(s, e):
+                    time.sleep(random.random() * 2)
+        
+
 class AIPlayer(Player):
     pass

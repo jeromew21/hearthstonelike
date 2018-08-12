@@ -32,6 +32,8 @@ class Hand:
     @property
     def size(self):
         return len(self.cards)
+    def clear(self):
+        self.cards = []
     def show(self):
         print("Hand:")
         for card in self.cards:

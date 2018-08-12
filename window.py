@@ -45,6 +45,7 @@ class Clickable:
         else:
             self._rect.setFill(self._icolor)
     def remove_card(self):
+        self.card = None
         self._icolor = "gray"
         self._scolor = "green"
         self._text.setText("Empty")

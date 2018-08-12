@@ -17,9 +17,12 @@ class Game:
         if not self.turn:
             self.player1.end_turn()
             self.player2.start_turn()
+            self.player2.random_turn()
             time.sleep(0.5)
             self.switch_turn()
         else:
             self.player2.end_turn()
             self.player1.start_turn()
+            print(self.player2.battlefield.soldiers)
+            print(self.player1.battlefield.soldiers)
         
