@@ -44,6 +44,7 @@ class FastForward(Spell):
             player._mana[0],
             player._mana[1] + 1
         )
+        return super().play(player, enemy)
 
 class ReachOut(Spell):
     cost = 1
@@ -54,6 +55,7 @@ class ReachOut(Spell):
             player._mana[0] + 3,
             player._mana[1]
         )
+        return super().play(player, enemy)
 
 class Mulligan(Spell):
     cost = 2

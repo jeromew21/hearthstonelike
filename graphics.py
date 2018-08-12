@@ -160,6 +160,8 @@ __version__ = "5.0"
 #     Added ability to set text atttributes.
 #     Added Entry boxes.
 
+# Edited by Jerome Wei 
+
 import time, os, sys
 
 try:  # import as appropriate for 2.x vs. 3.x
@@ -216,7 +218,7 @@ class GraphWin(tk.Canvas):
                            highlightthickness=0, bd=0)
         self.master.title(title)
         self.pack()
-        master.resizable(0,0)
+        #master.resizable(0,0)
         self.foreground = "black"
         self.items = []
         self.mouseX = None

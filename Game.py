@@ -23,6 +23,4 @@ class Game:
         else:
             self.player2.end_turn()
             self.player1.start_turn()
-            print(self.player2.battlefield.soldiers)
-            print(self.player1.battlefield.soldiers)
         

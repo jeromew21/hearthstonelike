@@ -84,7 +84,7 @@ class Clickable:
 class KOCWindow:
     def __init__(self, game):
         self.game = game
-        self.win = GraphWin("KOC", width=WIDTH, height=HEIGHT) # create a window
+        self.win = GraphWin("Hearthstone-like", width=WIDTH, height=HEIGHT) # create a window
         self.win.setCoords(0, 0, WIDTH, HEIGHT) # set the coordinates of the window; bottom left is (0, 0) and top right is (10, 10)
         
         dividing_line = HEIGHT * 0.63
@@ -363,5 +363,8 @@ class KOCWindow:
                 self.unset_activeSI()
     def loop(self):
         while True:
-            mouse = self.win.getMouse()
-            Clickable.register(mouse)       
+            try:
+                mouse = self.win.getMouse()
+                Clickable.register(mouse)
+            except:
+                sys.exit()     
