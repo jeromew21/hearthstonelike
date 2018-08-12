@@ -28,23 +28,61 @@ class Point:
     def __repr__(self):
         return "Point({}, {})".format(self._x, self._y)
 
-class Rectangle:
-    def __init__(self, p1, p2):
+class Drawable:
+    def __init__(self):
         self.thickness = 1
-        self.p1 = p1
-        self.p2 = p2
         self.color = color("white")
         self.outline = color("black")
-    def setFill(self, c):
-        self.color = color(c)
-    def setOutline(self, c):
-        self.outline = color(c)
-    def setWidth(self, i):
-        self.thickness = i
     def draw(self, win):
         win._add_object(self)
     def undraw(self, win):
         win._rem_object(self)
+    def setOutline(self, c):
+        self.outline = color(c)
+    def setWidth(self, i):
+        self.thickness = i
+
+class Line(Drawable):
+    def __init__(self, p1, p2):
+        super().__init__()
+        self.p1 = p1
+        self.p2 = p2
+    def update(self, win):
+        pygame.draw.lines(win.screen, 
+            self.outline, False, 
+            [
+                (self.p1.real_x(), self.p1.real_y()), 
+                (self.p2.real_x(), self.p2.real_y())
+            ], self.thickness)
+
+class Text(Drawable):
+    def __init__(self, p, label):
+        self.label = label
+        self.p = p
+        self.size = 15
+    def setSize(self, s):
+        self.size = s
+    def update(self, win):
+        label = win.font.render(self.label, self.size, self.outline)
+        win.screen.blit(label, (
+            self.p.real_x(),
+            self.p.real_y()
+        ))
+
+class Rectangle(Drawable):
+    def __init__(self, p1, p2):
+        super().__init__()
+        self.p1 = p1
+        self.p2 = p2
+    def setFill(self, c):
+        self.color = color(c)
+    def getCenter(self):
+        w = (self.p2.getX() - self.p1.getX()) / 2
+        h = (self.p2.getY() - self.p1.getY()) / 2
+        return Point(
+            self.p1.getX() + w,
+            self.p1.getY() + h
+        )
     def update(self, win):
         x = self.p1.real_x(win)
         y = self.p2.real_y(win)
@@ -65,6 +103,7 @@ class GraphWin:
         self._objects = []
 
         pygame.init()
+        self.font = pygame.font.SysFont("sans-serif", 15)
         pygame.display.set_caption(self.title)
         self.screen = pygame.display.set_mode(
             (self.width, self.height))
@@ -96,7 +135,6 @@ class GraphWin:
         if o in self._objects:
             self._objects.remove(o)
         
-    
 if __name__ == "__main__":
     g = GraphWin("Test", 640, 480)
     r = Rectangle(Point(100, 100), Point(150, 150))

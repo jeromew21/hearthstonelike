@@ -1,4 +1,4 @@
-from graphics import *
+from graphics2 import *
 import sys
 
 WIDTH = 1280
