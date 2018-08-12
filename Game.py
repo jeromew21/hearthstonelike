@@ -12,12 +12,20 @@ class Game:
 
         self.turn = True
         self.player1.start_turn()
+    def game_status(self):
+        if self.player1.health <= 0:
+            return "{} wins".format(self.player2.name)
+        if self.player2.health <= 0:
+            return "{} wins".format(self.player1.name)
+        return None
     def switch_turn(self):
-        self.turn = not self.turn
         if self.player1.health <= 0:
             return
         if self.player2.health <= 0:
             return
+
+        self.turn = not self.turn
+
         if not self.turn:
             self.player1.end_turn()
             self.player2.start_turn()

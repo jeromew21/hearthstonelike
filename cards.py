@@ -51,7 +51,7 @@ class FastForward(Spell):
 class ReachOut(Spell):
     cost = 1
     name = "Reach Out"
-    info = "Touch space"
+    info = "Gain 3 mana this turn"
     def play(self, player, enemy):
         player._mana = (
             player._mana[0] + 3,
@@ -103,14 +103,15 @@ class Raptor(Soldier):
     health = 2
     cost = 2
     name = "Kawhi Leonard"
-    info = "rawr"
+    tagline = "rawr"
 
 class Duo(Soldier):
     attack = 2
     health = 2
     cost = 3
     name = "Body Double"
-    info = "double the pride, twice the fall"
+    info = "Add a 2/2 copy to the battlefield"
+    tagline = "double the pride, twice the fall"
     def battlecry(self, player, enemy):
         player.battlefield.add_soldier(Duo())
 
@@ -119,7 +120,6 @@ class Yeti(Soldier):
     health = 5
     cost = 4
     name = "Abominable Snowman"
-    info = "Who ya gonna call"
 
 class GeneticFreak(Soldier):
     attack = 7
@@ -151,17 +151,20 @@ class Sharpsword(BuffSpell):
     value = 3
     cost = 2
     name = "Sharpsword"
+    info = "Give a soldier +3 Attack"
 
 class PlotArmor(BuffSpell):
     buff = "health"
     value = 5
     cost = 3
     name = "Plot Armor"
-    info = "OP"
+    tagline = "OP"
+    info = "Give a soldier +5 Health"
 
 class Shrink(BuffSpell):
     buff = "attack"
     value = -5
     cost = 3
     name = "Shrink"
-    info = "get a shrink"
+    tagline = "get a shrink"
+    info = "Give a soldier -5 Attack"

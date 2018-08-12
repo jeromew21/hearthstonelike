@@ -31,7 +31,11 @@ class Clickable:
         if not self.card is card:
             self.card = card
             self._toggle = False
+        self._rect.undraw()
+        self._rect.draw(self.w)
         self._text.setText(card.display_name)
+        self._text.undraw()
+        self._text.draw(self.w)
         if self.is_card:
             self._text2.setText(card.display_subtext)
         else:
@@ -54,6 +58,7 @@ class Clickable:
             self._rect.setFill(self._scolor)
         else:
             self._rect.setFill(self._icolor)
+        self._rect.undraw()
     def toggle_off(self):
         self._toggle = False
         self._rect.setFill(self._icolor)
@@ -84,7 +89,8 @@ class Clickable:
 class KOCWindow:
     def __init__(self, game):
         self.game = game
-        self.win = GraphWin("Hearthstone-like", width=WIDTH, height=HEIGHT) # create a window
+        self.win = GraphWin("Hearthclone", 
+        width=WIDTH, height=HEIGHT, icon="icon.gif") # create a window
         self.win.setCoords(0, 0, WIDTH, HEIGHT) # set the coordinates of the window; bottom left is (0, 0) and top right is (10, 10)
         
         dividing_line = HEIGHT * 0.63
@@ -101,6 +107,11 @@ class KOCWindow:
         self.battlefield1 = []
         self.battlefield2 = []
         self.hand1 = []
+
+        self.info_text = Text(Point(
+            WIDTH - WIDTH/4.5, HEIGHT/10
+        ), "")
+        self.info_text.draw(self.win)
 
         count = 5
         size = WIDTH//10
@@ -121,7 +132,6 @@ class KOCWindow:
                     lambda isP1, index: self.handle_soldier_click(isP1, index),
                     args=(g,i), is_card=False
                 )
-                soldierCell.draw()
 
                 if g:
                     self.battlefield1.append(soldierCell)
@@ -143,7 +153,6 @@ class KOCWindow:
                 lambda k: self.handle_hand_click(k),
                 args=(i,)
             )
-            handCell.draw()
             self.hand1.append(handCell)
 
         self.turn_text = Text(Point(90, HEIGHT - 150), "Your turn")
@@ -191,7 +200,13 @@ class KOCWindow:
         self.update_all()
 
     def update_all(self):
-        self.turn_text.setText("Your turn" if self.game.turn else "Enemy turn")
+        status = self.game.game_status()
+        if not status:
+            turn_text = "Your turn" if self.game.turn else "Enemy turn"
+        else: 
+            turn_text = status
+        self.turn_text.setText(turn_text)
+
         self.deck_text.setText("{} cards in deck".format(self.game.player1.deck.size))
         self.mana_text.setText("{} mana".format(self.game.player1.mana_str))
         self.enemy_deck_text.setText("{} cards in deck".format(self.game.player2.deck.size))
@@ -200,6 +215,13 @@ class KOCWindow:
         
         self.enemy_target.set_main_text(str(self.game.player2.health))
         self.player_target.set_main_text(str(self.game.player1.health))
+
+        if self._active_card_index is not None:
+            i = self._active_card_index
+            if i >= 0 and i < self.game.player1.hand.size:
+                card = self.game.player1.hand.cards[i]
+                self.info_text.setText(
+                    card.info + "\n•••\n" + card.tagline)
 
         k = -1
         for i, card in enumerate(self.game.player1.hand.cards):
@@ -299,10 +321,7 @@ class KOCWindow:
         if self.game.player1.spell:
             return
 
-        if self._active_card_index is None:
-            self._active_card_index = index
-            self.unset_activeSI()
-        elif self._active_card_index == index:
+        if self._active_card_index == index:
             self._active_card_index = None
             if not self.game.player1.play_card(index):
                 print("Can't play that card")
@@ -310,6 +329,10 @@ class KOCWindow:
                 if self.game.player1.spell:
                     self.set_targets(self.game.player1.spell_targets)
                 self.update_all()
+        else:
+            self._active_card_index = index
+            self.unset_activeSI()
+            self.update_all()
     def handle_soldier_click(self, isP1, index):
         if isP1:
             button = self.battlefield1[index]
@@ -363,8 +386,8 @@ class KOCWindow:
                 self.unset_activeSI()
     def loop(self):
         while True:
-            try:
-                mouse = self.win.getMouse()
-                Clickable.register(mouse)
-            except:
-                sys.exit()     
+            #try:
+            mouse = self.win.getMouse()
+            Clickable.register(mouse)
+            #except:
+             #   sys.exit()     

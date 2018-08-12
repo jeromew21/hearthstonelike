@@ -18,6 +18,12 @@ class Card:
     @property
     def subtext(self):
         return "card"
+    @property
+    def info(self):
+        return self.name
+    @property
+    def tagline(self):
+        return "a card"
     def __str__(self):
         return self.name
     def __repr__(self):
@@ -29,6 +35,7 @@ class Soldier(Card):
     cost = 2
     name = "Soldier"
     info = "A soldier"
+    tagline = "a soldier"
     def __init__(self):
         self._can_attack = False
     def can_play(self, player, enemy):
@@ -65,4 +72,4 @@ class Soldier(Card):
         self._can_attack = False
 
 class Spell(Card):
-    pass
+    subtext = "Spell"
