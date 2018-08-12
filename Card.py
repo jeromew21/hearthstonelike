@@ -1,11 +1,12 @@
 class Card:
-    cost = 0
+    cost = 1
     name = "Card"
     can_attack = False
     def can_play(self, player, enemy):
         return player.mana >= self.cost
     def play(self, player, enemy):
         player.spend_mana(self.cost)
+        return self
     @property
     def subtext(self):
         return "card"

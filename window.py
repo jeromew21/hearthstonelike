@@ -30,10 +30,10 @@ class Clickable:
         if not self.card is card:
             self.card = card
             self._toggle = False
-            self._text.setText(card.name)
-            self._text2.setText(card.subtext)
-            self._text2.undraw()
-            self._text2.draw(self.w)
+        self._text.setText(card.name)
+        self._text2.setText(card.subtext)
+        self._text2.undraw()
+        self._text2.draw(self.w)
         self._icolor = "yellow" if card.can_attack else "white"
         self._scolor = "lime" if card.can_attack else "purple"
         if self._toggle:
@@ -177,6 +177,8 @@ class KOCWindow:
         self.enemy_target.draw()
         self.player_target.draw()
 
+        self._active_card_index = None
+
         self._active_soldier_index = None
         self._active_soldier_outline = Rectangle(Point(0, 0), Point(0, 0))
         self._allowed_targets = []
@@ -190,6 +192,8 @@ class KOCWindow:
         self.enemy_deck_text.setText("{} cards in deck".format(self.game.player2.deck.size))
         self.enemy_mana_text.setText("{} mana".format(self.game.player2.mana_str))
         self.enemy_hand_text.setText("{} cards in hand".format(self.game.player2.hand.size))
+        
+        self.enemy_target.set_main_text(str(self.game.player2.health))
 
         k = -1
         for i, card in enumerate(self.game.player1.hand.cards):
@@ -246,13 +250,33 @@ class KOCWindow:
                 rect.setOutline("magenta")
                 rect.draw(self.win)
                 self._allowed_targets.append(rect)
-
     def unset_activeSI(self):
         self._active_soldier_outline.undraw()
         for i in self._allowed_targets:
             i.undraw()
         self._allowed_targets = []
         self._active_soldier_index = None
+    def set_targets(self, targets):
+        self._allowed_targets = []
+        for t in self.battlefield1 + self.battlefield2 + \
+            [self.player_target, self.enemy_target]:
+            if (t.card and t.card in targets) or \
+                (t is self.player_target and \
+                self.game.player1 in targets) or \
+                (t is self.enemy_target and \
+                self.game.player2 in targets):
+                rect = Rectangle(
+                    t._rect.getP1(),
+                    t._rect.getP2()
+                )
+                rect.setWidth("4")
+                rect.setOutline("magenta")
+                rect.draw(self.win)
+                self._allowed_targets.append(rect)
+    def clear_targets(self):
+        for i in self._allowed_targets:
+            i.undraw()
+        self._allowed_targets = []
     def handle_end_turn(self):
         self.game.switch_turn()
         self.update_all()
@@ -263,10 +287,20 @@ class KOCWindow:
             if i is not button:
                 i.toggle_off()
         button.toggle()
-        if not self.game.player1.play_card(index):
-            print("Can't play that card")
-        else:
-            self.update_all()
+        
+        if self.game.player1.spell:
+            return
+
+        if self._active_card_index is None:
+            self._active_card_index = index
+        elif self._active_card_index == index:
+            self._active_card_index = None
+            if not self.game.player1.play_card(index):
+                print("Can't play that card")
+            else:
+                if self.game.player1.spell:
+                    self.set_targets(self.game.player1.spell_targets)
+                self.update_all()
     def handle_soldier_click(self, isP1, index):
         if isP1:
             button = self.battlefield1[index]
@@ -275,6 +309,14 @@ class KOCWindow:
         for i in self.battlefield1 + self.battlefield2:
             if not i is button:
                 i.toggle_off()
+
+        if self.game.player1.spell:
+            if button.card and button.card in self.game.player1.spell_targets:
+                self.game.player1.cast(button.card)
+                self.clear_targets()
+                self.update_all()
+            return
+
         button.toggle()
         if self._active_soldier_index is None:
             if isP1 and button.card and button.card.can_attack:
@@ -288,16 +330,21 @@ class KOCWindow:
             else:
                 self.update_all()
                 self.unset_activeSI()
-
     def handle_base_click(self):
         pass
     def handle_enemy_click(self):
+        if self.game.player1.spell:
+            if self.game.player2 in self.game.player1.spell_targets:
+                self.game.player1.cast(self.game.player2)
+                self.clear_targets()
+                self.update_all()
+            return
+
         if self._active_soldier_index is not None:
             if not self.game.player1.soldier_attack(self._active_soldier_index, self.game.player2):
                 print("Can't attack base")
             else:
                 print("FACE IS PLACE")
-                self.enemy_target.set_main_text(str(self.game.player2.health))
                 self.update_all()
                 self.unset_activeSI()
     def loop(self):

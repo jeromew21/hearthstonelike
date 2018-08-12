@@ -1,6 +1,8 @@
 from DeckHand import Deck, Hand
 from Battlefield import Battlefield
 
+from multiprocessing.pool import ThreadPool
+
 class Player:
     attack = 0
     def __init__(self, name, deck):
@@ -11,6 +13,9 @@ class Player:
         self.health = 30
         self.battlefield = Battlefield(self)
         self._mana = (0, 0)
+        self.spell = None
+        self.spell_targets = None
+        self.graveyard = []
     def set_enemy(self, enemy):
         self.enemy = enemy
         self.battlefield.set_enemy(enemy)
@@ -39,16 +44,53 @@ class Player:
     def draw_card(self):
         card = self.deck.draw()
         self.hand.add_card(card)
+    def clean_up(self):
+        self.battlefield.soldiers = [
+            s for s in self.battlefield.soldiers if s.health > 0
+        ]
     def play_card(self, index):
         if self.hand.can_play(index, self, self.enemy):
             card = self.hand.throw(index).play(self, self.enemy)
             print("{} played {}".format(self.name, card))
+            self.clean_up()
             return True
         return False
-    def get_target(self):
-        print("Targets:")
-        targets = self.battlefield + self.enemy.battlefield + \
-            [self, self.enemy]
+    def __str__(self):
+        return self.name
+    def constrain_targets(self, constraint):
+        if constraint == "any":
+            targets = self.battlefield.soldiers + \
+                self.enemy.battlefield.soldiers + \
+                [self, self.enemy]
+        elif constraint == "enemies":
+            targets = self.enemy.battlefield.soldiers + \
+                [self.enemy]
+        elif constraint == "soldiers":
+            targets = self.enemy.battlefield.soldiers + \
+                self.battlefield.soldiers
+        elif constraint == "enemy soldiers":
+            targets = self.enemy.battlefield.soldiers
+        elif constraint == "friendlies":
+            targets = self.battlefield.soldiers + [self]
+        elif constraint == "bases":
+            targets = [self, self.enemy]
+        else:
+            targets = []
+        return targets
+    def set_spell(self, spell, constraint="any"):
+        self.spell = spell
+        self.spell_targets = self.constrain_targets(constraint)
+        if not self.spell_targets:
+            self.spell = None
+    def cast(self, target):
+        if target in self.spell_targets:
+            self.spell.cast(target)
+            self.spell = None
+            self.spell_targets = None
+    def input_target(self, constraint="any"):
+        targets = self.constrain_targets(constraint)
+        if not targets:
+            return False
         n = 0
         for k in targets:
             print(n, str(k))
@@ -57,15 +99,11 @@ class Player:
             try:
                 i = int(input("Target:"))
                 if i < 0 or i >= len(targets):
-                    raise Exception("oops")
-            except:
+                    raise ZeroDivisionError("oops")
+                break
+            except (ZeroDivisionError, ValueError):
                 print("Invalid input.")
         return targets[i]
-
-class GUIPlayer(Player):
-    def _get_target(self):
-        while True:
-            break
-        return 0
     
-
+class AIPlayer(Player):
+    pass
