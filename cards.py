@@ -35,6 +35,26 @@ class DirectDamageSpell(TargetSpell):
     def cast(self, target):
         target.take_damage(self, self.damage)
 
+class FastForward(Spell):
+    cost = 2
+    name = "Fast Forward"
+    info = "Gain an empty Mana"
+    def play(self, player, enemy):
+        player._mana = (
+            player._mana[0],
+            player._mana[1] + 1
+        )
+
+class ReachOut(Spell):
+    cost = 1
+    name = "Reach Out"
+    info = "Touch space"
+    def play(self, player, enemy):
+        player._mana = (
+            player._mana[0] + 3,
+            player._mana[1]
+        )
+
 class Mulligan(Spell):
     cost = 2
     name = "Mulligan"
@@ -52,7 +72,7 @@ class Boi(Soldier):
     attack = 1
     health = 1
     cost = 1
-    name = "Boi"
+    name = "Monkey"
     info = "A little boi"
 
 class Archer(Soldier):
@@ -72,7 +92,7 @@ class Cobra(Soldier):
     cost = 3
     name = "Cobra"
     info = "Poisonous cobra"
-    poisonous = True
+    poison = True
 
 class Raptor(Soldier):
     attack = 3

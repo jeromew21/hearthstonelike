@@ -48,7 +48,7 @@ class Clickable:
         self.card = None
         self._icolor = "gray"
         self._scolor = "green"
-        self._text.setText("Empty")
+        self._text.setText("")
         self._text2.undraw()
         if self._toggle:
             self._rect.setFill(self._scolor)
@@ -116,7 +116,7 @@ class KOCWindow:
                     p2 = Point(offset+size + (i*size), dividing_line-padding)
 
                 soldierCell = Clickable(
-                    "Empty",
+                    "",
                     p1, p2, self.win,
                     lambda isP1, index: self.handle_soldier_click(isP1, index),
                     args=(g,i), is_card=False
@@ -138,7 +138,7 @@ class KOCWindow:
             p2 = Point(offset+wth + (i*wth), dividing_line-padding)
 
             handCell = Clickable(
-                "Empty",
+                "",
                 p1, p2, self.win,
                 lambda k: self.handle_hand_click(k),
                 args=(i,)
