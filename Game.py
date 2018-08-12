@@ -14,6 +14,10 @@ class Game:
         self.player1.start_turn()
     def switch_turn(self):
         self.turn = not self.turn
+        if self.player1.health <= 0:
+            return
+        if self.player2.health <= 0:
+            return
         if not self.turn:
             self.player1.end_turn()
             self.player2.start_turn()
