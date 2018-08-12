@@ -8,6 +8,12 @@ class Card:
         player.spend_mana(self.cost)
         return self
     @property
+    def display_name(self):
+        return self.name
+    @property
+    def display_subtext(self):
+        return "{}\n{}❂".format(self.subtext, self.cost)
+    @property
     def subtext(self):
         return "card"
     def __str__(self):

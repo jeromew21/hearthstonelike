@@ -53,6 +53,7 @@ class Player:
             card = self.hand.throw(index).play(self, self.enemy)
             print("{} played {}".format(self.name, card))
             self.clean_up()
+            self.enemy.clean_up()
             return True
         return False
     def __str__(self):
@@ -87,6 +88,8 @@ class Player:
             self.spell.cast(target)
             self.spell = None
             self.spell_targets = None
+            self.clean_up()
+            self.enemy.clean_up()
     def input_target(self, constraint="any"):
         targets = self.constrain_targets(constraint)
         if not targets:

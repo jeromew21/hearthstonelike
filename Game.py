@@ -5,8 +5,8 @@ import time
 
 class Game:
     def __init__(self):
-        self.player1 = Player("Player 1", decks.bois())
-        self.player2 = Player("Player 2", decks.bois())
+        self.player1 = Player("Player 1", decks.random_deck())
+        self.player2 = Player("Player 2", decks.random_deck())
         self.player1.set_enemy(self.player2)
         self.player2.set_enemy(self.player1)
 
