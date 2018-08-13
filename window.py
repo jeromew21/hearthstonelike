@@ -202,7 +202,7 @@ class KOCWindow:
         self.update_all()
 
     def update_all(self):
-        status = self.game.game_status()
+        status = self.game.game_status()[0]
         if not status:
             turn_text = "Your turn" if self.game.turn else "Enemy turn"
         else: 

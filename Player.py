@@ -47,7 +47,8 @@ class Player:
         return False
     def draw_card(self):
         card = self.deck.draw()
-        self.hand.add_card(card)
+        if card is not None:
+            self.hand.add_card(card)
     def clean_up(self):
         self.battlefield.soldiers = [
             s for s in self.battlefield.soldiers if s.health > 0
@@ -113,15 +114,16 @@ class Player:
             except (ZeroDivisionError, ValueError):
                 print("Invalid input.")
         return targets[i]
-    def random_turn(self):
+    def random_turn(self, stall=True):
         li = list(range(self.hand.size))
         random.shuffle(li)
         for i in li:
-            if self.play_card(i):
+            if self.play_card(i) and stall:
                 time.sleep(random.random() * 2)
             if self.spell:
                 if self.spell_targets:
-                    time.sleep(random.random() * 2)
+                    if stall:
+                        time.sleep(random.random() * 2)
                     self.cast(random.choice(self.spell_targets))
                 else:
                     break
@@ -129,7 +131,7 @@ class Player:
         random.shuffle(sols)
         for s in sols:
             for e in [self.enemy] + self.enemy.battlefield.soldiers:
-                if self.soldier_attack(s, e):
+                if self.soldier_attack(s, e) and stall:
                     time.sleep(random.random() * 2)
         
 

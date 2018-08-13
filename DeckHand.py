@@ -41,5 +41,6 @@ class Hand:
     def throw(self, i):
         return self.cards.pop(i)
     def can_play(self, i, player, enemy):
-        return i >= 0 and i < self.size and self.cards[i].can_play(player, enemy)
+        return i >= 0 and i < self.size \
+            and self.cards[i].can_play(player, enemy)
         
