@@ -1,6 +1,7 @@
 from window import *
 import decks
 from Player import *
+from ai import *
 import time    
 
 class Game:
@@ -38,7 +39,7 @@ class Game:
         if not self.turn:
             self.player1.end_turn()
             self.player2.start_turn()
-            self.player2.random_turn()
+            AI(self, self.player2).make_turn()
             time.sleep(0.5)
             self.switch_turn()
         else:
