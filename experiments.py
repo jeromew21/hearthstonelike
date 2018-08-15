@@ -8,13 +8,13 @@ class TestGame(Game):
             self.player1.random_turn(stall=False)
             self.player1.end_turn()
             self.turns += 1
-            if self.game_status() is not None:
+            if self.game_status()[1] is not None:
                 break
             self.player2.start_turn()
             self.player2.random_turn(stall=False)
             self.player2.end_turn()
             self.turns += 1
-            if self.game_status() is not None:
+            if self.game_status()[1] is not None:
                 break
             self.player1.start_turn()
         return self.game_status()

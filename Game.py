@@ -26,7 +26,7 @@ class Game:
             return "{} wins".format(self.player1.name), 1
         if self.turns > 100:
             return "Tie", 0
-        return None
+        return "", None
     def switch_turn(self):
         if self.player1.health <= 0:
             return
