@@ -1,5 +1,6 @@
 from DeckHand import Deck, Hand
 from Battlefield import Battlefield
+from Powers import *
 
 import random, time
 
@@ -16,7 +17,9 @@ class Player:
         self.spell = None
         self.spell_targets = None
         self.graveyard = []
+        self.base_power = Ship()
         self.say = lambda s: print(s)
+        self.can_use_power = False
     def set_enemy(self, enemy):
         self.enemy = enemy
         self.battlefield.set_enemy(enemy)
@@ -27,8 +30,14 @@ class Player:
         self.battlefield.start_turn()
         self.spell = None
         self.spell_targets = None
+        self.can_use_power = True
     def end_turn(self):
         self.battlefield.end_turn()
+        self.can_use_power = False
+    def use_power(self):
+        if self.can_use_power:
+            self.base_power.play(self, self.enemy)
+            self.can_use_power = False
     @property
     def mana(self):
         return self._mana[0]
@@ -43,7 +52,6 @@ class Player:
         if self.battlefield.can_attack(index, enemy):
             self.battlefield.soldiers[index].do_attack(enemy)
             self.clean_up()
-            self.enemy.clean_up()
             return True
         return False
     def draw_card(self):
@@ -54,12 +62,14 @@ class Player:
         self.battlefield.soldiers = [
             s for s in self.battlefield.soldiers if s.health > 0
         ]
+        self.enemy.battlefield.soldiers = [
+            s for s in self.enemy.battlefield.soldiers if s.health > 0
+        ]
     def play_card(self, index):
         if self.hand.can_play(index, self, self.enemy):
             card = self.hand.throw(index).play(self, self.enemy)
             self.say("{} played {}".format(self.name, card))
             self.clean_up()
-            self.enemy.clean_up()
             return True
         return False
     def __str__(self):
@@ -97,7 +107,6 @@ class Player:
             self.spell = None
             self.spell_targets = None
             self.clean_up()
-            self.enemy.clean_up()
     def input_target(self, constraint="any"):
         targets = self.constrain_targets(constraint)
         if not targets:

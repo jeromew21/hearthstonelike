@@ -1,41 +1,4 @@
-from Card import Soldier, Spell
-
-class TargetSpell(Spell):
-    constraint = "any"
-    def play(self, player, enemy):
-        player.set_spell(self, self.constraint)
-        return super().play(player, enemy)
-    def cast(self, target):
-        pass
-
-class BuffSpell(TargetSpell):
-    buff = "attack"
-    value = 1
-    cost = 1
-    name = "Buff"
-    constraint = "soldiers"
-    @property
-    def subtext(self):
-        return "{}{} {}".format(
-            "+" if self.value >= 0 else "",
-            self.value, self.buff)
-    def cast(self, target):
-        setattr(target, self.buff, 
-            getattr(target, self.buff) + self.value)
-
-class DirectDamageSpell(TargetSpell):
-    damage = 1
-    cost = 1
-    name = "Direct Damage"
-    constraint = "any"
-    @property
-    def subtext(self):
-        return "{} damage".format(self.damage)
-    @property
-    def info(self):
-        return "Do {} damage".format(self.damage)
-    def cast(self, target):
-        target.take_damage(self, self.damage)
+from Card import *
 
 class FastForward(Spell):
     cost = 2

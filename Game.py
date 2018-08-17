@@ -35,6 +35,7 @@ class Game:
 
         self.turns += 1
         self.turn = not self.turn
+        print("Switching Turns")
 
         if not self.turn:
             self.player1.end_turn()

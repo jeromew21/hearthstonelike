@@ -215,8 +215,22 @@ class KOCWindow:
         self.enemy_mana_text.setText("{} mana".format(self.game.player2.mana_str))
         self.enemy_hand_text.setText("{} cards in hand".format(self.game.player2.hand.size))
         
-        self.enemy_target.set_main_text(str(self.game.player2.health))
-        self.player_target.set_main_text(str(self.game.player1.health))
+        self.enemy_target.set_main_text(
+            "{}\n{}".format(
+                self.game.player2.health,
+                self.game.player2.base_power.name
+            )
+        )
+        self.player_target.set_main_text(
+            "{}\n{}".format(
+                self.game.player1.health,
+                self.game.player1.base_power.name
+            )
+        )
+        if self.game.player1.can_use_power:
+            self.player_target._rect.setFill("green")
+        else:
+            self.player_target._rect.setFill("gray")
 
         if self._active_card_index is not None:
             i = self._active_card_index
@@ -280,12 +294,14 @@ class KOCWindow:
                 rect.setOutline("magenta")
                 rect.draw(self.win)
                 self._allowed_targets.append(rect)
+
     def unset_activeSI(self):
         self._active_soldier_outline.undraw()
         for i in self._allowed_targets:
             i.undraw()
         self._allowed_targets = []
         self._active_soldier_index = None
+
     def set_targets(self, targets):
         self._allowed_targets = []
         for t in self.battlefield1 + self.battlefield2 + \
@@ -303,16 +319,23 @@ class KOCWindow:
                 rect.setOutline("magenta")
                 rect.draw(self.win)
                 self._allowed_targets.append(rect)
+
     def clear_targets(self):
         for i in self._allowed_targets:
             i.undraw()
         self._allowed_targets = []
+
     def handle_end_turn(self):
+        if self.game.game_status()[1] is not None:
+            return
         if self.game.player1.spell:
             return
         self.game.switch_turn()
         self.update_all()
         self.unset_activeSI()
+        for i in self.battlefield1:
+            i.toggle_off()
+
     def handle_hand_click(self, index):
         button = self.hand1[index]
         for i in self.hand1:
@@ -335,6 +358,7 @@ class KOCWindow:
             self._active_card_index = index
             self.unset_activeSI()
             self.update_all()
+
     def handle_soldier_click(self, isP1, index):
         if isP1:
             button = self.battlefield1[index]
@@ -364,6 +388,7 @@ class KOCWindow:
             else:
                 self.update_all()
                 self.unset_activeSI()
+
     def handle_base_click(self):
         if self.game.player1.spell:
             if self.game.player2 in self.game.player1.spell_targets:
@@ -371,6 +396,11 @@ class KOCWindow:
                 self.clear_targets()
                 self.update_all()
             return
+        elif self.game.player1.can_use_power:
+            self.game.player1.use_power()
+            if self.game.player1.spell:
+                self.set_targets(self.game.player1.spell_targets)
+            else: self.update_all()
     def handle_enemy_click(self):
         if self.game.player1.spell:
             if self.game.player2 in self.game.player1.spell_targets:
@@ -388,8 +418,8 @@ class KOCWindow:
                 self.unset_activeSI()
     def loop(self):
         while True:
-            #try:
-            mouse = self.win.getMouse()
-            Clickable.register(mouse)
-            #except:
-             #   sys.exit()     
+            try:
+                mouse = self.win.getMouse()
+                Clickable.register(mouse)
+            except:
+               sys.exit()     
