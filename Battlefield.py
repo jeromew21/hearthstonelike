@@ -1,5 +1,5 @@
 class Battlefield:
-    max_size = 7
+    max_size = 5
     def __init__(self, player):
         self.soldiers = []
         self.player = player

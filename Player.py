@@ -16,6 +16,7 @@ class Player:
         self.spell = None
         self.spell_targets = None
         self.graveyard = []
+        self.say = lambda s: print(s)
     def set_enemy(self, enemy):
         self.enemy = enemy
         self.battlefield.set_enemy(enemy)
@@ -56,7 +57,7 @@ class Player:
     def play_card(self, index):
         if self.hand.can_play(index, self, self.enemy):
             card = self.hand.throw(index).play(self, self.enemy)
-            print("{} played {}".format(self.name, card))
+            self.say("{} played {}".format(self.name, card))
             self.clean_up()
             self.enemy.clean_up()
             return True
@@ -84,14 +85,14 @@ class Player:
             targets = []
         return targets
     def set_spell(self, spell, constraint="any"):
-        print("Waiting to cast {}".format(spell))
+        self.say("Waiting to cast {}".format(spell))
         self.spell = spell
         self.spell_targets = self.constrain_targets(constraint)
         if not self.spell_targets:
             self.spell = None
     def cast(self, target):
         if target in self.spell_targets:
-            print("Casting {} on {}".format(self.spell, target))
+            self.say("Casting {} on {}".format(self.spell, target))
             self.spell.cast(target)
             self.spell = None
             self.spell_targets = None
@@ -103,7 +104,7 @@ class Player:
             return False
         n = 0
         for k in targets:
-            print(n, str(k))
+            self.say(n, str(k))
             n += 1
         while True:
             try:
@@ -112,7 +113,7 @@ class Player:
                     raise ZeroDivisionError("oops")
                 break
             except (ZeroDivisionError, ValueError):
-                print("Invalid input.")
+                self.say("Invalid input.")
         return targets[i]
     def random_turn(self, stall=True):
         li = list(range(self.hand.size))
