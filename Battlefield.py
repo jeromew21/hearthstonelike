@@ -24,3 +24,6 @@ class Battlefield:
     @property
     def full(self):
         return len(self.soldiers) >= self.max_size
+    @property
+    def empty(self):
+        return not self.soldiers

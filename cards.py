@@ -121,6 +121,24 @@ class Yeti(Soldier):
     cost = 4
     name = "Abominable Snowman"
 
+class LoneWolf(Soldier):
+    attack = 3
+    health = 4
+    cost = 2
+    name = "Lone Wolf"
+    info = "Can only play if battlefield is empty"
+    def can_play(self, player, enemy):
+        return super().can_play(player, enemy) and player.battlefield.empty
+
+class Kamikaze(Soldier):
+    attack = 6
+    health = 1
+    name = "Kamizake"
+    info = "Dies when it attacks"
+    def do_attack(self, target):
+        super().do_attack(target)
+        self.health = 0
+
 class GeneticFreak(Soldier):
     attack = 7
     health = 9

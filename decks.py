@@ -6,7 +6,7 @@ ALL_CARDS = [
     Boi, Nuke, Yeti, Firebreath, Raptor, Sharpsword,
     Mulligan, Archer, Cobra, FastForward, 
     ReachOut, AssasinationPlot, PlotArmor, Shrink,
-    Duo, GeneticFreak
+    Duo, GeneticFreak, Kamikaze, LoneWolf
 ]
 
 def bois():
